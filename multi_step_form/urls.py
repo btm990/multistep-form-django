@@ -16,7 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from multi_step_form import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/users/', views.users, name='users'),
+    path('api/users/<str:id>', views.user, name='user'),
+    path('api/subscriptions/<str:user_id>', views.subscription, name='subscription'),
+    path('api/subscriptions/', views.subscriptions, name='subscriptions')
 ]
