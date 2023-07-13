@@ -37,14 +37,12 @@ ADDONS_PRICING = {
 
 def createBill(sender, instance, created, **kwargs):
     subscriptionObj = SubscriptionPlanSerializer(instance)
-    print("I arrived. I hate this fucking inconsistent garbage.")
 
     if created:
 
         addons = {key : val for (key, val) in subscriptionObj.data.items() if key in [k for k in ADDONS_PRICING.keys()]}
 
         if subscriptionObj.data['yearly'] == "on":
-            print("yearly is on. I made it here")
             [OST, LST, CPT] = [ADDONS_PRICING[k]['Yearly'] if v == "on" else 0 for (k, v) in addons.items()]
             planPrice = PLANS_PRICING[subscriptionObj.data['plan']]['Yearly']
             bill = Bill(
@@ -55,17 +53,16 @@ def createBill(sender, instance, created, **kwargs):
                 Customizable_Profile_Total=CPT,
                 BillTotal = sum([planPrice, CPT, LST, OST])
             )
-            print(bill)
             bill.save()
             
         else:
             [OST, LST, CPT] = [ADDONS_PRICING[k]['Monthly'] if v == "on" else 0 for (k, v) in addons.items()]
             planPrice = PLANS_PRICING[subscriptionObj.data['plan']]['Monthly']
             bill = Bill(
-                subscription=subscriptionObj.data,
+                subscription=instance,
                 Plan_Total= planPrice,
                 Larger_Storage_Total=LST,
-                Online_storage_Total=OST,
+                Online_service_Total=OST,
                 Customizable_Profile_Total=CPT,
                 BillTotal = sum([planPrice, CPT, LST, OST])
             )
@@ -93,8 +90,8 @@ def sendMail(sender, instance, created, **kwargs):
         subject = 'Your LoremGaming Subscription Confirmation'
         message = 'Glad to have you on board!'
 
-        with open('index.html', 'w') as wf:
-            wf.write(html)
+        # with open('index.html', 'w') as wf:
+        #     wf.write(html)
 
         send_mail(
             subject,
