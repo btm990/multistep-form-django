@@ -84,14 +84,10 @@ def sendMail(sender, instance, created, **kwargs):
         dateTime = " | ".join(subscription.data['created'].split(".")[0].split("T"))
         billTotal = bill.data['BillTotal']*18.80
         kwargs = {k : v for (k, v) in bill.data.items() if k not in ['id', 'subscription', 'Plan_Total', 'BillTotal', 'created']}
-        print(kwargs)
 
         html = htmlTemplate(name, plan, planTotal, yearly, dateTime, billTotal, **kwargs)
         subject = 'Your LoremGaming Subscription Confirmation'
         message = 'Glad to have you on board!'
-
-        # with open('index.html', 'w') as wf:
-        #     wf.write(html)
 
         send_mail(
             subject,
